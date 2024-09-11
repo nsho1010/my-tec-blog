@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { M_PLUS_1 } from "next/font/google";
 import "./globals.css";
+import QueryProvider from "@/components/providers/QueryProvider"
 
 const mPlus1 = M_PLUS_1({
   weight: ["400", "700", "900"],
@@ -31,7 +32,7 @@ export default function RootLayout({
       <body
         className={mPlus1.className}
       >
-        {children}
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );
