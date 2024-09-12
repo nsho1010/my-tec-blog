@@ -2,14 +2,17 @@
 
 import { BlogType } from "@/types"
 import { format } from "date-fns"
+import { blogPerPage } from "@/lib/utils"
 import BlogItem from "@/components/blog/BlogItem"
+import PaginationButton from "../pagers/PaginationButton"
 
 interface ArchiveProps {
   blogs: BlogType[]
+  pageCount:number
 }
 
 // アーカイブ
-const Archive = ({ blogs }: ArchiveProps) => {
+const Archive = ({ blogs, pageCount }: ArchiveProps) => {
   return (
     <div>
       <div className="font-bold border-l-4 border-black pl-2 mb-5">
@@ -21,6 +24,10 @@ const Archive = ({ blogs }: ArchiveProps) => {
           <BlogItem key={blog.id} blog={blog} />
         ))}
       </div>
+
+      {blogs.length  !== 0 && (
+        <PaginationButton pageCount={pageCount} displayPerPage={blogPerPage}/>
+      )}
     </div>
   )
 }

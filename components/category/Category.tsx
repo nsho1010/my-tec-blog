@@ -1,12 +1,15 @@
 import { BlogType } from '@/types'
 import React from 'react'
+import { blogPerPage } from "@/lib/utils"
 import BlogItem from '../blog/BlogItem'
+import PaginationButton from "@/components/pagers/PaginationButton"
 
 interface CategoryProps {
     blogs: BlogType[]
+    pageCount:number
 }
 
-const Category = ({ blogs }: CategoryProps) => {
+const Category = ({ blogs, pageCount }: CategoryProps) => {
   return (
     <div>
         <div className='font-bold border--l-4 border-black pl-2 mb-5'>
@@ -17,6 +20,10 @@ const Category = ({ blogs }: CategoryProps) => {
                 <BlogItem key={blog.id} blog={blog} />
             ))}
         </div>
+
+        {blogs.length !== 0 && (
+            <PaginationButton pageCount={pageCount} displayPerPage={blogPerPage} />
+        )}
     </div>
   )
 }

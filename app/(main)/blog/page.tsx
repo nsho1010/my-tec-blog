@@ -1,25 +1,46 @@
-import Loading from '@/app/loading'
-import Blog from '@/components/blog/Blog'
-import LayoutWithSidebar from '@/components/Layout/LayoutWithSidebar'
-import { client } from '@/components/ui/microcms'
-import { BlogType } from '@/types'
-import React, { Suspense } from 'react'
+import { Suspense } from "react"
+import { BlogType } from "@/types"
+import { blogPerPage } from "@/lib/utils"
+import Blog from "@/components/blog/Blog"
+import Loading from "@/app/loading"
+import { client } from "@/components/ui/microcms"
+import LayoutWithSidebar from "@/components/Layout/LayoutWithSidebar"
 
-const BlogPage = async () => {
-    const allBlog = await client.getList<BlogType>({
+export const revalidate = 0
+
+interface BlogPageProps {
+    searchParams: {
+        [key: string]: string | undefined
+    }
+}
+
+// ブログページ
+const BlogPage = async ({ searchParams }: BlogPageProps) => {
+    const { page, perPage } = searchParams
+
+    const limit = typeof perPage === "string" ? parseInt(perPage) : blogPerPage
+    const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
+
+    const allBlogs = await client.getList<BlogType>({
         endpoint: "blog",
         queries: {
-            orders: "-publishedAt"
-        }
-    })
+            limit: limit,
+            offset: offset,
+            orders: "-publishedAt",
+        },
+    }
+)
 
-  return (
-    <Suspense fallback={<Loading/>}>
+const pageCount = Math.ceil(allBlogs.totalCount / limit)
+
+return (
+    <Suspense fallback={<Loading />}>
         <LayoutWithSidebar>
-            <Blog blogs={allBlog.contents}/>
+            <Blog blogs={allBlogs.contents} pageCount={pageCount} />
         </LayoutWithSidebar>
     </Suspense>
   )
 }
+
 
 export default BlogPage
